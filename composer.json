@@ -1,0 +1,27 @@
+{
+    "name": "henrique/ebanx",
+    "description": "api test for interview",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "TestEbanx\\": "src/",
+            "Core\\": "core/"
+        }
+    },
+    "require": {
+        "psr/container": "^1.0",
+        "php-di/php-di": "^6.4",
+        "symfony/routing": "^6.0",
+        "symfony/http-foundation": "^6.0",
+        "symfony/http-kernel": "^6.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.21"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}

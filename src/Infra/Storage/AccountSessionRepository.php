@@ -11,11 +11,13 @@ class AccountSessionRepository implements AccountRepositoryInterface
     {
         if (PHP_SAPI == 'cli') {
             $_SESSION = [];
+        } else {
+
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
         }
 
-//        if (session_status() === PHP_SESSION_NONE) {
-//            session_start();
-//        }
         if (!isset($_SESSION['accounts'])) {
             $_SESSION['accounts'][] = [
                 'id' => 300,
@@ -48,5 +50,14 @@ class AccountSessionRepository implements AccountRepositoryInterface
     public function restart(): void
     {
         unset($_SESSION['accounts']);
+    }
+
+    public function update(int $id, Account $account): void
+    {
+        $index = array_search($id, $_SESSION['accounts']);
+        $_SESSION['accounts'][$index] = [
+            'id' => $account->id,
+            'amount' => $account->balance()
+        ];
     }
 }

@@ -6,6 +6,10 @@ use TestEbanx\Domain\Exceptions\AccountException;
 
 class Account
 {
+    const OPERATION_TYPE_DEPOSIT = 'deposit';
+    const OPERATION_TYPE_WITHDRAW = 'withdraw';
+    const OPERATION_TYPE_TRANSFER = 'transfer';
+
     public function __construct(
         public readonly int $id,
         private float $amount = 0.00

@@ -55,14 +55,12 @@ class AccountManager
     private function handleDeposit(array $transaction)
     {
         $account = $this->accountRepository->find($transaction['destination']);
-
         if (is_null($account)) {
             $account = $this->createAccount($transaction);
         }
 
         $account->deposit($transaction['amount']);
         $this->accountRepository->update($account->id, $account);
-
         return [
             'destination' => [
                 'id' => $account->id,
@@ -98,6 +96,37 @@ class AccountManager
                 'id' => $account->id,
                 'balance' => $account->balance()
             ]
+        ];
+    }
+
+    /**
+     * @throws AccountNotFoundException
+     * @throws AccountException
+     */
+    private function handleTransfer(array $transaction): array
+    {
+        $originAccount = $this->accountRepository->find($transaction['origin']);
+        if (is_null($originAccount)) {
+            throw new AccountNotFoundException('origin account not found');
+        }
+        $destinationAccount = $this->accountRepository->find($transaction['destination']);
+        if (is_null($destinationAccount)) {
+            throw new AccountNotFoundException('destination account not found');
+        }
+
+        $originAccount->transfer($transaction['amount'], $destinationAccount);
+        $this->accountRepository->update($originAccount->id, $originAccount);
+        $this->accountRepository->update($destinationAccount->id, $destinationAccount);
+
+        return [
+            'origin' => [
+                'id' => $originAccount->id,
+                'balance' => $originAccount->balance()
+            ],
+            'destination' => [
+                'id' => $destinationAccount->id,
+                'balance' => $destinationAccount->balance()
+            ],
         ];
     }
 }

@@ -54,10 +54,13 @@ class AccountSessionRepository implements AccountRepositoryInterface
 
     public function update(int $id, Account $account): void
     {
-        $index = array_search($id, $_SESSION['accounts']);
-        $_SESSION['accounts'][$index] = [
-            'id' => $account->id,
-            'amount' => $account->balance()
-        ];
+        foreach ($_SESSION['accounts'] as $key => $accountSession) {
+            if ($accountSession['id'] == $id) {
+               $_SESSION['accounts'][$key] = [
+                   'id' => $account->id,
+                   'amount' => $account->balance()
+               ];
+            }
+        }
     }
 }

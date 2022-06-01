@@ -61,9 +61,10 @@ class AccountManager
 
         $account->deposit($transaction['amount']);
         $this->accountRepository->update($account->id, $account);
+
         return [
             'destination' => [
-                'id' => $account->id,
+                'id' => (string) $account->id,
                 'balance' => $account->balance()
             ],
         ];
@@ -83,7 +84,7 @@ class AccountManager
      */
     private function handleWithdraw(array $transaction): array
     {
-        $account = $this->accountRepository->find($transaction['destination']);
+        $account = $this->accountRepository->find($transaction['origin']);
         if (is_null($account)) {
             throw new AccountNotFoundException('account not found');
         }
@@ -93,7 +94,7 @@ class AccountManager
 
         return [
             'origin' => [
-                'id' => $account->id,
+                'id' =>  (string) $account->id,
                 'balance' => $account->balance()
             ]
         ];
@@ -120,11 +121,11 @@ class AccountManager
 
         return [
             'origin' => [
-                'id' => $originAccount->id,
+                'id' => (string) $originAccount->id,
                 'balance' => $originAccount->balance()
             ],
             'destination' => [
-                'id' => $destinationAccount->id,
+                'id' => (string) $destinationAccount->id,
                 'balance' => $destinationAccount->balance()
             ],
         ];

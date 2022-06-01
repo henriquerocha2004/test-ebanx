@@ -20,7 +20,7 @@ class AccountController
     public function reset(Request $request): Response
     {
         $this->accountManager->resetAccounts();
-        return new Response(null, Response::HTTP_OK);
+        return new Response("OK", Response::HTTP_OK);
     }
 
     public function balance(Request $request): Response
@@ -45,13 +45,13 @@ class AccountController
         $bodyContent = json_decode($request->getContent());
 
         if (
-            !filter_var($bodyContent->destination, FILTER_VALIDATE_INT) ||
             !filter_var($bodyContent->amount, FILTER_VALIDATE_FLOAT)
         ) {
             return new Response("invalid transaction data", Response::HTTP_BAD_REQUEST);
         }
 
-        if (isset($bodyContent->origin) && !filter_var($bodyContent->origin, FILTER_VALIDATE_INT)) {
+
+        if (isset($bodyContent->destination) && !filter_var($bodyContent->destination, FILTER_VALIDATE_INT)) {
             return new Response("invalid transaction data", Response::HTTP_BAD_REQUEST);
         }
 
@@ -70,9 +70,8 @@ class AccountController
         } catch (InvalidOperationException $e) {
             return new Response("invalid transaction operation", Response::HTTP_BAD_REQUEST);
         } catch (Exception $e) {
-
+            return new Response("failed to process transaction", Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
 
         return new JsonResponse($result, Response::HTTP_CREATED);
     }

@@ -41,7 +41,7 @@ test('should create account with initial balance', function () {
     expect($response->getStatusCode())->toBe(201)
         ->and($responseData)->toBe([
             'destination' => [
-                'id' => 100,
+                'id' => '100',
                 'balance' => 10
             ]
         ]);
@@ -66,7 +66,7 @@ test('should deposit into existing account', function () {
     expect($response->getStatusCode())->toBe(201)
         ->and($responseData)->toBe([
             'destination' => [
-                'id' => 100,
+                'id' => '100',
                 'balance' => 20
             ]
         ]);
@@ -92,7 +92,7 @@ test('should get balance for existing account', function () {
 test('should withdraw from non existing account', function () {
     $payload = json_encode([
         'type' => 'withdraw',
-        'destination' => 600,
+        'origin' => 600,
         'amount' => 10
     ]);
 
@@ -119,18 +119,19 @@ test('should withdraw from existing account', function () {
 
     $payload = json_encode([
         'type' => 'withdraw',
-        'destination' => 100,
+        'origin' => 100,
         'amount' => 5
     ]);
 
     $response = $this->clientHttp->request('POST', '/event', [
         'body' => $payload
     ]);
+
     $responseData = json_decode($response->getBody()->getContents(), true);
     expect($response->getStatusCode())->toBe(201)
         ->and($responseData)->toBe([
             'origin' => [
-                'id' => 100,
+                'id' => '100',
                 'balance' => 5
             ]
         ]);
@@ -161,11 +162,11 @@ test('should transfer from existing account', function () {
     expect($response->getStatusCode())->toBe(201)
         ->and($responseData)->toBe([
             'origin' => [
-                'id' => 100,
+                'id' => '100',
                 'balance' => 0
             ],
             'destination' => [
-                'id' => 300,
+                'id' => '300',
                 'balance' => 15
             ]
         ]);
